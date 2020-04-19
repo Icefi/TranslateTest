@@ -1,4 +1,3 @@
 all:
-		build clean
-build:
-		gcc -o exec main.c
+		gcc -Wall -o english main.c
+
