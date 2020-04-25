@@ -1,3 +1,3 @@
 all:
-		gcc -Wall -o english main.c
+	gcc -Wall -o english main.c
 
