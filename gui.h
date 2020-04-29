@@ -3,12 +3,16 @@
 
 #include <gtk/gtk.h>
 
+typedef struct comparasionData{
+    GtkWidget *entry;
+}comparasionData;
+
 void
 print_entry (GtkWidget *widget,
              gpointer   data
 			 );
              
-const gchar*
+gchar*
 getNextWord();
 
 void
