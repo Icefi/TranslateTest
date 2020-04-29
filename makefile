@@ -1,6 +1,16 @@
+OUT = test
+CFLAGS = -Wall -g `pkg-config --cflags --libs gtk+-3.0`
+OBJS = main.o gui.o
+
 .PHONY: all clean
 
-all:
-		gcc -o g.exe gui.c main.c -g `pkg-config --cflags --libs gtk+-3.0`
+all: $(OUT)
+
+%.o: %.c
+		gcc $^ -c $(CFLAGS) -o $@
+
+$(OUT): $(OBJS)
+		gcc `pkg-config --cflags --libs gtk+-3.0` -o $(OUT) $^
+
 clean:
-		rm *.o
+		rm -f *.o $(OUT)
