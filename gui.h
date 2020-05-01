@@ -2,18 +2,35 @@
 #define GUI_H
 
 #include <gtk/gtk.h>
+#include <string.h>
 
-typedef struct comparasionData{
+typedef struct compData{
+    int count_words;
+    int current_key;
+    char* engwords;
+    char* ruwords;
     GtkWidget *entry;
-}comparasionData;
+    GtkWidget *pages;
+    GtkWidget *labelWord;
+    GtkWidget *counterSetter;
+    char* result;
+    char mode;
+}compData;
 
 void
-print_entry (GtkWidget *widget,
-             gpointer   data
+testStart(GtkWidget *widget,
+            gpointer   user_data);
+
+void
+testEnd(gpointer user_data);
+
+void
+compareFunc (GtkWidget *widget,
+             gpointer   user_data
 			 );
-             
-gchar*
-getNextWord();
+
+void
+createResults(gpointer user_data, GtkWidget* grid);
 
 void
 activate (GtkApplication *app,
