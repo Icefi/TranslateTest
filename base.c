@@ -3,38 +3,60 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct{
-  int count_words;
-  int current_key;
-  char* engwords;
-  char* ruwords;
-  char* entry;
-  char* result;
-}DATA;
+    int count_words;
+    int current_key;
+    char* engwords;
+    char* ruwords;
+    //GtkWidget *entry;
+    //GtkWidget *pages;
+    //GtkWidget *labelWord;
+    //GtkWidget *counterSetter;
+    char* result;
+    char mode;
+}compData;
 
-DATA* set_data(int count_words) {
-  DATA* new_base;
+float get_rand_range(const float min, const float max) {
+    return rand()%100 * (max - min) + min;
+}
+
+compData* set_compData(int count_words, char lang) {
+  compData* new_base;
   
-  new_base = (DATA*)malloc(20);
+  new_base = (compData*)malloc(20);
   new_base->count_words = count_words;
   new_base->engwords = (char*)calloc(count_words, 20 * sizeof(char));
   new_base->ruwords = (char*)calloc(count_words, 20 * sizeof(char));
-  new_base->entry = (char*)malloc(20 * sizeof(char));
   new_base->result = (char*)malloc(count_words * sizeof(char));
   new_base->current_key = 0;
-  
+  new_base->mode = lang;
   
   FILE* file = fopen("words.csv", "r");
 
   char string[50] = {};
   char sub_word[20] = {};
   char *istr;
-
-  for (int i = 1; i < 11; i++) {
-
+  float x;
+  int size_of_base = 100; //count of words in words.csv
+  srand(time(NULL));
+  int i = 0;
+  while (count_words > 0) {
+    x = (float)count_words/size_of_base + get_rand_range(0, 1)/100;
     fscanf(file, "%49s", string);
-
+    
+    if (x >= 1) {
+        i++;
+        count_words--;
+        size_of_base--;
+    } else {
+        size_of_base--;
+        continue;
+    }
+    
+  
+    
     istr = strtok(string, ",");
     strcpy(sub_word, istr);
 
@@ -53,7 +75,7 @@ DATA* set_data(int count_words) {
   return new_base;
 }
 
-char* get_word(DATA* v, int key, char lang) {
+char* get_word(compData* v, int key, char lang) {
   
   char* word = (char*)malloc(20 * sizeof(char));
   key++;

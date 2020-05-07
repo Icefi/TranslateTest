@@ -3,9 +3,9 @@
 #include "base.h"
 
 int main() {
-  DATA* base = set_data(10);
+  compData* base = set_compData(10, 'r');
   for (int i = 0; i < 10; i++) {
-    printf("1) %s - %s\n", get_word(base, i, 1), get_word(base, i, 0));
+    printf("%d) %s - %s\n", i + 1, get_word(base, i, 1), get_word(base, i, 0));
   }
   
   return 0;

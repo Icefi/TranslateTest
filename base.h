@@ -3,7 +3,7 @@
 
 #include "base.c"
 
-DATA* set_data(int count_words);
-char* get_word(DATA* v, int key, char lang);
+compData* set_compData(int count_words, char lang);
+char* get_word(compData* v, int key, char lang);
 
 #endif
