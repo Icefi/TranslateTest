@@ -1,6 +1,6 @@
 OUT = t.exe
-CFLAGS = "-Wno-incompatible-pointer-types"  -g `pkg-config --cflags --libs gtk+-3.0`
-OBJS = main.o gui.o
+CFLAGS = -Wall "-Wno-incompatible-pointer-types" `pkg-config --cflags --libs gtk+-3.0`
+OBJS = main.o gui.o base.o
 
 .PHONY: all clean
 
@@ -10,7 +10,7 @@ all: clean $(OUT)
 		gcc $^ -c $(CFLAGS) -o $@
 
 $(OUT): $(OBJS)
-		gcc `pkg-config --cflags --libs gtk+-3.0` -o $(OUT) $^
+		gcc -g `pkg-config --cflags --libs gtk+-3.0` -o $(OUT) $^
 
 clean:
 		rm -f *.o $(OUT)

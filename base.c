@@ -1,42 +1,27 @@
 #ifndef BASE_C
-#define BASE_c
+#define BASE_C
 
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#define MAX_WORD_SIZE 20
 
-typedef struct{
-    int count_words;
-    int current_key;
-    char* engwords;
-    char* ruwords;
-    //GtkWidget *entry;
-    //GtkWidget *pages;
-    //GtkWidget *labelWord;
-    //GtkWidget *counterSetter;
-    char* result;
-    char mode;
-}compData;
+#include "base.h"
 
 float get_rand_range(const float min, const float max) {
     return rand()%100 * (max - min) + min;
 }
 
-compData* set_compData(int count_words, char lang) {
-  compData* new_base;
+void set_compData(int count_words, char lang, struct compData* new_base) {
   
-  new_base = (compData*)malloc(20);
   new_base->count_words = count_words;
-  new_base->engwords = (char*)calloc(count_words, 20 * sizeof(char));
-  new_base->ruwords = (char*)calloc(count_words, 20 * sizeof(char));
-  new_base->result = (char*)malloc(count_words * sizeof(char));
+  new_base->engwords = (char*)malloc(MAX_WORD_SIZE * sizeof(char));
+  new_base->ruwords = (char*)malloc(MAX_WORD_SIZE * sizeof(char));
+  new_base->result = (char*)malloc((count_words + 1) * sizeof(char));
   new_base->current_key = 0;
   new_base->mode = lang;
   
   FILE* file = fopen("words.csv", "r");
 
-  char string[50] = {};
-  char sub_word[20] = {};
+  char string[2 * MAX_WORD_SIZE + 2] = {};
+  //char sub_word[MAX_WORD_SIZE] = {};
   char *istr;
   float x;
   int size_of_base = 100; //count of words in words.csv
@@ -55,40 +40,76 @@ compData* set_compData(int count_words, char lang) {
         continue;
     }
     
-  
-    
     istr = strtok(string, ",");
-    strcpy(sub_word, istr);
+    strcpy(new_base->engwords, istr);
 
     istr = strtok(NULL, ",");
-    for (int j = 0; j < 20; j++) {
-    	*(new_base->engwords + i*20 + j) = sub_word[j];
+    strcpy(new_base->ruwords, istr);
+  /*
+    istr = strtok(NULL, ",");
+    for (int j = 0; j < MAX_WORD_SIZE; j++) {
+    	*(new_base->engwords + i*MAX_WORD_SIZE + j) = sub_word[j];
     }
 
     strcpy(sub_word, istr);
-    for (int j = 0; j < 20; j++) {
-    	*(new_base->ruwords + i*20 + j) = sub_word[j];
+    for (int j = 0; j < MAX_WORD_SIZE; j++) {
+    	*(new_base->ruwords + i*MAX_WORD_SIZE + j) = sub_word[j];
     }
-  
+  */
   }
-  
-  return new_base;
+  fclose(file);
+  return;
 }
 
-char* get_word(compData* v, int key, char lang) {
+void word_change(struct compData* data)
+{
+  FILE* file = fopen("words.csv", "r");
+  char string[2 * MAX_WORD_SIZE + 2] = {};
+  //char sub_word[MAX_WORD_SIZE] = {};
+  char *istr;
+  float x;
+  int size_of_base = 100; //count of words in words.csv
+  srand(time(NULL));
+  int i = 0;
+
+  int count_words = data->count_words;
+  while (count_words > 0) {
+    x = (float)count_words/size_of_base + get_rand_range(0, 1)/100;
+    fscanf(file, "%49s", string);
+    
+    if (x >= 1) {
+        i++;
+        count_words--;
+        size_of_base--;
+    } else {
+        size_of_base--;
+        continue;
+    }
+    
+    istr = strtok(string, ",");
+    strcpy(data->engwords, istr);
+
+    istr = strtok(NULL, ",");
+    strcpy(data->ruwords, istr);
+  }
+  fclose(file);
+  return;
+}
+
+char* get_word(struct compData* v, int key, char lang) {
   
-  char* word = (char*)malloc(20 * sizeof(char));
+  char* word = (char*)malloc(MAX_WORD_SIZE * sizeof(char));
   key++;
   if (key > v->count_words)
   	key = key % v->count_words;
   
-  if (lang)
-    for (int i = 0; i < 20; i++) {
-    	*(word + i) = *(v->engwords + key*20 + i);
+  if (lang== 'e')
+    for (int i = 0; i < MAX_WORD_SIZE; i++) {
+    	*(word + i) = *(v->engwords + key*MAX_WORD_SIZE + i);
     }
   else
-    for (int i = 0; i < 20; i++) {
-    	*(word + i) = *(v->ruwords + key*20 + i);
+    for (int i = 0; i < MAX_WORD_SIZE; i++) {
+    	*(word + i) = *(v->ruwords + key*MAX_WORD_SIZE + i);
     }
   return word;
 }

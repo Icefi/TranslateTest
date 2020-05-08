@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "base.h"
 
 void
 compareFunc (GtkWidget *widget,
@@ -6,14 +7,21 @@ compareFunc (GtkWidget *widget,
 			 )
 {
     struct compData *data = user_data;
-	g_print (gtk_entry_get_text(data->entry));
-    /* word comparasion placeholder    
-    int temp = strcmp(get_word(data,data->current_key,data->mode),gtk_entry_get_text(data->entry));
-	gtk_entry_set_text (data->entry,get_word(data,data->current_key,data->mode));
-    */
+
+    int temp = strcmp(data->engwords,gtk_entry_get_text(data->entry));
+    if (temp == 0){
+        data->result[data->current_key] = '+';
+    } else {
+        data->result[data->current_key] = '-';
+    }
+
+    word_change(data);
+	gtk_label_set_text (data->labelWord,data->ruwords);
     gtk_entry_set_text(data->entry,"");
+
     data->current_key++;
     if (data->current_key >= data->count_words){
+        data->result[data->current_key] = '\0';
         testEnd(data);
     }
     return;
@@ -24,8 +32,9 @@ testStart(GtkWidget *widget,
             gpointer   user_data)
 {
     struct compData *data = user_data;
-    data->count_words = gtk_spin_button_get_value(data->counterSetter);
-    data->current_key = 0;
+    set_compData(gtk_spin_button_get_value(data->counterSetter),'e',data);
+    gtk_label_set_text(data->labelWord, data->ruwords);
+
     gtk_stack_set_visible_child_name(data->pages,"Test");
     return;
 }
@@ -42,12 +51,10 @@ void
 createResults(gpointer user_data, GtkWidget* grid){
     struct compData *data = user_data;
     GtkWidget *labelResults;
-    char *string = malloc(data->count_words * 20 * sizeof(char));
-    for (int i = 0; i < data->count_words; i++){
-        //placeholder for adding results
-    }
-    labelResults = gtk_label_new(string);
-    gtk_grid_attach (GTK_GRID (grid), labelResults, 0, 1, 2, 1);
+    char temp[10] = {};
+    // write buffers as you ga along?
+    labelResults = gtk_label_new(temp);
+    gtk_grid_attach (GTK_GRID (grid), labelResults, 1, 3, 1, 1);
 }
 
 void
@@ -57,9 +64,8 @@ activate (GtkApplication *app,
     /* PREPARATIONS */
     GtkWidget *window;
     GtkWidget *gridTest, *gridMenu, *gridEnd;
-    GtkWidget *buttonNext, *buttonStart, *buttonEnd;
+    GtkWidget *buttonNext, *buttonStart;
     GtkWidget *labelEnd, *labelStart;
-
     struct compData* data = malloc(sizeof(struct compData));
 
     window = gtk_application_window_new (app);

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "gui.h"
+#include "base.h"
 
 int main(int argc, char *argv[]){
 
