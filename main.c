@@ -1,12 +1,18 @@
 #include <stdio.h>
-#include <string.h>
-#include "base.h"
+#include "gui.h"
 
-int main() {
-  compData* base = set_compData(10, 'r');
-  for (int i = 0; i < 10; i++) {
-    printf("%d) %s - %s\n", i + 1, get_word(base, i, 1), get_word(base, i, 0));
-  }
-  
-  return 0;
+int main(int argc, char *argv[]){
+
+	gtk_init (&argc, &argv);
+
+	GtkApplication *app;
+	int status;
+
+	app = gtk_application_new ("org.gtk.test", G_APPLICATION_FLAGS_NONE);
+	g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+
+	status = g_application_run (G_APPLICATION (app), argc, argv);
+	g_object_unref (app);
+
+	return 0;
 }
