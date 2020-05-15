@@ -6,111 +6,104 @@
 #include "base.h"
 
 float get_rand_range(const float min, const float max) {
-    return rand()%100 * (max - min) + min;
+  return rand() % 100 * (max - min) + min;
 }
 
-void set_compData(int count_words, char lang, struct compData* new_base) {
-  
+void set_compData(int count_words, char lang, struct compData *new_base) {
+
   new_base->count_words = count_words;
-  new_base->engwords = (char*)malloc(MAX_WORD_SIZE * sizeof(char));
-  new_base->ruwords = (char*)malloc(MAX_WORD_SIZE * sizeof(char));
-  new_base->result = (char*)malloc((count_words + 1) * sizeof(char));
+  new_base->engwords = (char *)malloc(MAX_WORD_SIZE * sizeof(char));
+  new_base->ruwords = (char *)malloc(MAX_WORD_SIZE * sizeof(char));
+  new_base->result = (char *)malloc((count_words + 1) * sizeof(char));
   new_base->current_key = 0;
   new_base->mode = lang;
-  
-  FILE* file = fopen("words.csv", "r");
+
+  FILE *file = fopen("words.csv", "r");
 
   char string[2 * MAX_WORD_SIZE + 2] = {};
-  //char sub_word[MAX_WORD_SIZE] = {};
   char *istr;
   float x;
-  int size_of_base = 100; //count of words in words.csv
-  srand(time(NULL));
+  int size_of_base = 100;
+
   int i = 0;
+  srand(time(NULL));
   while (count_words > 0) {
-    x = (float)count_words/size_of_base + get_rand_range(0, 1)/100;
+    x = (float)count_words / size_of_base + get_rand_range(0, 1) / 100;
     fscanf(file, "%49s", string);
-    
+
     if (x >= 1) {
-        i++;
-        count_words--;
-        size_of_base--;
+      i++;
+      count_words--;
+      size_of_base--;
     } else {
-        size_of_base--;
-        continue;
+      size_of_base--;
+      continue;
     }
-    
+
     istr = strtok(string, ",");
     strcpy(new_base->engwords, istr);
 
     istr = strtok(NULL, ",");
     strcpy(new_base->ruwords, istr);
-  /*
-    istr = strtok(NULL, ",");
-    for (int j = 0; j < MAX_WORD_SIZE; j++) {
-    	*(new_base->engwords + i*MAX_WORD_SIZE + j) = sub_word[j];
-    }
 
-    strcpy(sub_word, istr);
-    for (int j = 0; j < MAX_WORD_SIZE; j++) {
-    	*(new_base->ruwords + i*MAX_WORD_SIZE + j) = sub_word[j];
-    }
-  */
   }
   fclose(file);
   return;
 }
 
-void word_change(struct compData* data)
-{
-  FILE* file = fopen("words.csv", "r");
+void word_change(struct compData *data) {
+  FILE *file = fopen("words.csv", "r");
+	srand(time(NULL));
+
   char string[2 * MAX_WORD_SIZE + 2] = {};
-  //char sub_word[MAX_WORD_SIZE] = {};
   char *istr;
-  float x;
-  int size_of_base = 100; //count of words in words.csv
-  srand(time(NULL));
+  
+  int size_of_base = 100;
   int i = 0;
 
   int count_words = data->count_words;
+	float x;
   while (count_words > 0) {
-    x = (float)count_words/size_of_base + get_rand_range(0, 1)/100;
+    x = (float)count_words / size_of_base + get_rand_range(0, 1) / 100;
     fscanf(file, "%49s", string);
-    
+
     if (x >= 1) {
-        i++;
-        count_words--;
-        size_of_base--;
+      i++;
+      count_words--;
+      size_of_base--;
     } else {
-        size_of_base--;
-        continue;
+      size_of_base--;
+      continue;
     }
-    
+
     istr = strtok(string, ",");
     strcpy(data->engwords, istr);
 
     istr = strtok(NULL, ",");
     strcpy(data->ruwords, istr);
   }
+
   fclose(file);
   return;
 }
 
-char* get_word(struct compData* v, int key, char lang) {
-  
-  char* word = (char*)malloc(MAX_WORD_SIZE * sizeof(char));
-  key++;
-  if (key > v->count_words)
-  	key = key % v->count_words;
-  
-  if (lang== 'e')
-    for (int i = 0; i < MAX_WORD_SIZE; i++) {
-    	*(word + i) = *(v->engwords + key*MAX_WORD_SIZE + i);
-    }
-  else
-    for (int i = 0; i < MAX_WORD_SIZE; i++) {
-    	*(word + i) = *(v->ruwords + key*MAX_WORD_SIZE + i);
-    }
+char *get_word(struct compData *v, int key, char lang) {
+
+  char *word = (char *)malloc(MAX_WORD_SIZE * sizeof(char));
+
+  key = (key + 1) % v->count_words;
+
+  if (lang == 'e') {
+
+    for (int i = 0; i < MAX_WORD_SIZE; i++)
+      *(word + i) = *(v->engwords + key * MAX_WORD_SIZE + i);
+
+  } else {
+
+    for (int i = 0; i < MAX_WORD_SIZE; i++)
+      *(word + i) = *(v->ruwords + key * MAX_WORD_SIZE + i);
+	}
+
   return word;
 }
 
