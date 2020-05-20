@@ -41,10 +41,10 @@ void set_compData(int count_words, char lang, struct compData *new_base) {
     }
 
     istr = strtok(string, ",");
-    strcpy(new_base->engwords, istr);
+    strcpy(new_base->ruwords, istr);
 
     istr = strtok(NULL, ",");
-    strcpy(new_base->ruwords, istr);
+    strcpy(new_base->engwords, istr);
 
   }
   fclose(file);
