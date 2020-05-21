@@ -1,22 +1,19 @@
 #ifndef BASE_C
 #define BASE_C
 
-#define MAX_WORD_SIZE 20
-
 #include "base.h"
 
 float get_rand_range(const float min, const float max) {
   return rand() % 100 * (max - min) + min;
 }
 
-void set_compData(int count_words, char lang, struct compData *new_base) {
+void set_compData(int count_words, struct compData *new_base) {
 
   new_base->count_words = count_words;
   new_base->engwords = (char *)malloc(MAX_WORD_SIZE * sizeof(char));
   new_base->ruwords = (char *)malloc(MAX_WORD_SIZE * sizeof(char));
   new_base->result = (char *)malloc((count_words + 1) * sizeof(char));
   new_base->current_key = 0;
-  new_base->mode = lang;
 
   FILE *file = fopen("words.csv", "r");
 
@@ -77,10 +74,10 @@ void word_change(struct compData *data) {
     }
 
     istr = strtok(string, ",");
-    strcpy(data->engwords, istr);
+    strcpy(data->ruwords, istr);
 
     istr = strtok(NULL, ",");
-    strcpy(data->ruwords, istr);
+    strcpy(data->engwords, istr);
   }
 
   fclose(file);

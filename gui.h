@@ -4,6 +4,8 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+#define MAX_WORD_SIZE 20
+
 typedef struct compData{
     int count_words;
     int current_key;
@@ -24,13 +26,19 @@ testStart(GtkWidget *widget,
 void
 testEnd(gpointer user_data);
 
+void 
+destroy (GtkWidget* widget, gpointer data);
+
+void 
+setEng(GtkWidget* widget, gpointer user_data);
+
+void 
+setRu(GtkWidget* widget, gpointer user_data);
+
 void
 compareFunc (GtkWidget *widget,
              gpointer   user_data
 			 );
-
-void
-createResults(gpointer user_data, GtkWidget* grid);
 
 void
 activate (GtkApplication *app,
