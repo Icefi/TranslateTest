@@ -9,8 +9,8 @@
 typedef struct compData{
     int count_words;
     int current_key;
-    char* engwords;
-    char* ruwords;
+    char engwords[10][MAX_WORD_SIZE+1];
+    char ruwords[10][MAX_WORD_SIZE+1];
     GtkWidget *entry;
     GtkWidget *pages;
     GtkWidget *labelWord;

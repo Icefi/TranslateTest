@@ -8,16 +8,19 @@ compareFunc (GtkWidget *widget,
 {
     struct compData *data = user_data;
     int temp;
+    char* input = gtk_entry_get_text(data->entry);
+    for (int i = 0; i<strlen(input);i++){
+        input[i]=g_unichar_tolower(input[i]);
+    }
 
     if (data->mode == 'e'){
-        temp = strcmp(data->ruwords,gtk_entry_get_text(data->entry));
-        word_change(data);
-        gtk_label_set_text (data->labelWord,data->engwords);
+        temp = strcmp(data->ruwords[data->current_key],input);
+        gtk_label_set_text (data->labelWord,data->engwords[data->current_key+1]);
     } else {
-        temp = strcmp(data->engwords,gtk_entry_get_text(data->entry));
-        word_change(data);
-        gtk_label_set_text (data->labelWord,data->ruwords);        
+        temp = strcmp(data->engwords[data->current_key],input);
+        gtk_label_set_text (data->labelWord,data->ruwords[data->current_key+1]);        
     }
+    
     if (temp == 0){
         data->result[data->current_key] = '+';
     } else {
@@ -41,10 +44,13 @@ testStart(GtkWidget *widget,
     set_compData(gtk_spin_button_get_value(data->counterSetter),data);
 
     if (data->mode == 'e'){
-        gtk_label_set_text(data->labelWord, data->engwords);
+        gtk_label_set_text(data->labelWord, data->engwords[0]);
     } else {
-        gtk_label_set_text(data->labelWord, data->ruwords);
+        gtk_label_set_text(data->labelWord, data->ruwords[0]);
     }
+        for (int i=0; i<data->count_words; i++){
+            g_print("%s\t%s\n",data->engwords[i],data->ruwords[i]);
+        }
 
     gtk_stack_set_visible_child_name(data->pages,"Test");
     return;
@@ -108,6 +114,7 @@ activate (GtkApplication *app,
     gtk_grid_attach (GTK_GRID (gridMenu), labelStart, 0, 0, 1, 1);
 
     data->counterSetter = gtk_spin_button_new_with_range(1,10,1);
+    gtk_spin_button_set_value(data->counterSetter,5);
     gtk_grid_attach (GTK_GRID (gridMenu), data->counterSetter, 0, 1, 1, 1);
 
     data->mode = 'r';
