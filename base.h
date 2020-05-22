@@ -8,6 +8,6 @@
 
 void set_compData(int count_words, struct compData* new_base);
 int get_file_lines(void);
-int rand_condition(int max_lines, int count_words, int i);
+int rand_condition(int max_lines, int count_words, int i, int passed);
 
 #endif

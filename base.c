@@ -3,10 +3,13 @@
 
 #include "base.h"
 
-int rand_condition(int max_lines, int count_words, int i)
+int rand_condition(int max_lines, int count_words, int i, int passed)
 {
-    // a proper function
-    return 1;
+    if ((double)((count_words - i) / (double)(max_lines - passed))
+        > ((double)rand() / (double)RAND_MAX)) {
+        return 1;
+    }
+    return 0;
 }
 
 int get_file_lines()
@@ -41,10 +44,12 @@ void set_compData(int count_words, struct compData* new_base)
     srand(time(NULL));
 
     int i = 0;
+    int passed = 0;
     int max_lines = get_file_lines();
     while ((fgets(string, 2 * MAX_WORD_SIZE + 2, file) != NULL)
            && (i < count_words)) {
-        if (rand_condition(max_lines, count_words, i)) { // some function
+        passed++;
+        if (rand_condition(max_lines, count_words, i, passed)) {
             istr = strtok(string, ",");
             g_utf8_strncpy(new_base->ruwords[i], istr, MAX_WORD_SIZE);
 
