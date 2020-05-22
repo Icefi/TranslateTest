@@ -8,29 +8,36 @@ compareFunc (GtkWidget *widget,
 {
     struct compData *data = user_data;
     int temp;
-    char* input = gtk_entry_get_text(data->entry);
-    for (int i = 0; i<strlen(input);i++){
-        input[i]=g_unichar_tolower(input[i]);
-    }
+    gchar *input = g_utf8_casefold(gtk_entry_get_text(data->entry),-1);
+    gchar *target;
+
 
     if (data->mode == 'e'){
-        temp = strcmp(data->ruwords[data->current_key],input);
+        sprintf(data->result+strlen(data->result), "%-20s\t",data->engwords[data->current_key]);
+        sprintf(data->result+strlen(data->result), "%-20s\t",data->ruwords[data->current_key]);
+        target = g_utf8_casefold(data->ruwords[data->current_key],-1);
         gtk_label_set_text (data->labelWord,data->engwords[data->current_key+1]);
     } else {
-        temp = strcmp(data->engwords[data->current_key],input);
-        gtk_label_set_text (data->labelWord,data->ruwords[data->current_key+1]);        
+        sprintf(data->result+strlen(data->result), "%-20s\t",data->ruwords[data->current_key]);
+        sprintf(data->result+strlen(data->result), "%-20s\t",data->engwords[data->current_key]);
+        target = g_utf8_casefold(data->engwords[data->current_key],-1);
+        gtk_label_set_text (data->labelWord,data->ruwords[data->current_key+1]);    
     }
-    
-    if (temp == 0){
-        data->result[data->current_key] = '+';
-    } else {
-        data->result[data->current_key] = '-';
-    }
-    gtk_entry_set_text(data->entry,"");
 
+    sprintf(data->result+strlen(data->result), "%-20s\t",gtk_entry_get_text(data->entry));
+    temp = g_strcmp0 (target,input);
+
+    if (temp == 0){
+        sprintf(data->result+strlen(data->result), "%s\n","+");
+    } else {
+        sprintf(data->result+strlen(data->result), "%s\n","-");
+    }
+
+    gtk_entry_set_text(data->entry,"");
+    
     data->current_key++;
     if (data->current_key >= data->count_words){
-        data->result[data->current_key] = '\0';
+        gtk_label_set_text (data->labelResults,data->result);
         testEnd(data);
     }
     return;
@@ -48,9 +55,6 @@ testStart(GtkWidget *widget,
     } else {
         gtk_label_set_text(data->labelWord, data->ruwords[0]);
     }
-        for (int i=0; i<data->count_words; i++){
-            g_print("%s\t%s\n",data->engwords[i],data->ruwords[i]);
-        }
 
     gtk_stack_set_visible_child_name(data->pages,"Test");
     return;
@@ -147,9 +151,12 @@ activate (GtkApplication *app,
     labelEnd = gtk_label_new("Результаты");
     gtk_grid_attach (GTK_GRID (gridEnd), labelEnd, 0, 0, 2, 1);
 
+    data->labelResults = gtk_label_new("placeholder");
+    gtk_grid_attach (GTK_GRID (gridEnd), data->labelResults, 0, 1, 2, 1);
+
     buttonQuit = gtk_button_new_with_label("Выход");
     g_signal_connect (buttonQuit, "clicked", G_CALLBACK (destroy), app);
-    gtk_grid_attach (GTK_GRID (gridEnd), buttonQuit, 0, 2, 1, 1);
+    gtk_grid_attach (GTK_GRID (gridEnd), buttonQuit, 0, 2, 2, 1);
 
     /* SHOW WINDOW */
     gtk_container_add (GTK_CONTAINER (window), GTK_STACK (data->pages));

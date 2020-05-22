@@ -3,18 +3,20 @@
 
 #include <gtk/gtk.h>
 #include <string.h>
+#include <stdio.h>
 
 #define MAX_WORD_SIZE 20
 
 typedef struct compData{
     int count_words;
     int current_key;
-    char engwords[10][MAX_WORD_SIZE+1];
-    char ruwords[10][MAX_WORD_SIZE+1];
+    char engwords[10][4*MAX_WORD_SIZE+1];
+    char ruwords[10][4*MAX_WORD_SIZE+1];
     GtkWidget *entry;
     GtkWidget *pages;
     GtkWidget *labelWord;
     GtkWidget *counterSetter;
+    GtkWidget *labelResults;
     char* result;
     char mode;
 }compData;

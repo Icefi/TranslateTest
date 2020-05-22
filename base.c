@@ -24,8 +24,10 @@ int get_file_lines(){
 void set_compData(int count_words, struct compData *new_base) {
 
   new_base->count_words = count_words;
-  new_base->result = (char *)malloc((count_words + 1) * sizeof(char));
+  new_base->result = (char *)malloc(count_words * MAX_WORD_SIZE * 8 + 100); //how many words * max word size * two utf16 units + extra
   new_base->current_key = 0;
+
+  sprintf(new_base->result,"Вопрос\t\tОтвет\t\tВвод\t\tРезультат\n");
 
   FILE *file = fopen("words.csv", "r");
 
@@ -40,10 +42,10 @@ void set_compData(int count_words, struct compData *new_base) {
   {
     if (rand_condition(max_lines,count_words,i)) {    //some function
     istr = strtok(string, ",");
-    strcpy(new_base->ruwords[i], istr);
+    g_utf8_strncpy (new_base->ruwords[i], istr, MAX_WORD_SIZE);
 
-    istr = strtok(NULL, ",");
-    strcpy(new_base->engwords[i], istr);
+    istr = strtok(NULL, "\n");
+    g_utf8_strncpy(new_base->engwords[i], istr, MAX_WORD_SIZE);
     
     i++;
     }
