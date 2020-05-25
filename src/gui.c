@@ -54,7 +54,7 @@ void compareFunc(GtkWidget* widget, gpointer user_data)
 void testStart(GtkWidget* widget, gpointer user_data)
 {
     struct compData* data = user_data;
-    set_compData(gtk_spin_button_get_value(data->counterSetter), data);
+    set_compData(gtk_spin_button_get_value(data->counterSetter), data, "words.csv");
 
     if (data->mode == 'e') {
         gtk_label_set_text(data->labelWord, data->engwords[0]);
