@@ -16,8 +16,8 @@ typedef struct compData {
     GtkWidget* pages;
     GtkWidget* labelWord;
     GtkWidget* counterSetter;
-    GtkWidget* labelResults;
-    char* result;
+    GtkWidget *labelQ, *labelA, *labelResults;
+    char *qString, *aString, *resultString;
     char mode;
 } compData;
 

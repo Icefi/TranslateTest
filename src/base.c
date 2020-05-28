@@ -6,7 +6,7 @@
 int rand_condition(int max_lines, int count_words, int i, int passed)
 {
     if ((double)((count_words - i) / (double)(max_lines - passed))
-        > ((double)rand() / (double)RAND_MAX)) {
+        >= ((double)rand() / (double)RAND_MAX)) {
         return 1;
     }
     return 0;
@@ -29,12 +29,15 @@ int get_file_lines(char* name)
 void set_compData(int count_words, struct compData* new_base, char* name)
 {
     new_base->count_words = count_words;
-    new_base->result = (char*)malloc(
-            count_words * MAX_WORD_SIZE * 8
-            + 100); // how many words * max word size * two utf16 units + extra
+    new_base->resultString
+            = (char*)malloc(count_words * MAX_WORD_SIZE * 8 + 50);
+    new_base->aString = (char*)malloc(count_words * MAX_WORD_SIZE * 4 + 50);
+    new_base->qString = (char*)malloc(count_words * MAX_WORD_SIZE * 4 + 50);
     new_base->current_key = 0;
 
-    sprintf(new_base->result, "Вопрос        Ответ        Ввод        Результат\n");
+    sprintf(new_base->aString, "Ответ\n");
+    sprintf(new_base->qString, "Вопрос\n");
+    sprintf(new_base->resultString, "Оценка\tВвод\n");
 
     FILE* file = fopen(name, "r");
 
