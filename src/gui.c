@@ -9,43 +9,45 @@ void compareFunc(GtkWidget* widget, gpointer user_data)
     gchar* target;
 
     if (data->mode == 'e') {
-        sprintf(data->result + strlen(data->result),
-                "%-20s\t",
+        sprintf(data->qString + strlen(data->qString),
+                "%s\n",
                 data->engwords[data->current_key]);
-        sprintf(data->result + strlen(data->result),
-                "%-20s\t",
+        sprintf(data->aString + strlen(data->aString),
+                "%s\n",
                 data->ruwords[data->current_key]);
         target = g_utf8_casefold(data->ruwords[data->current_key], -1);
         gtk_label_set_text(
                 data->labelWord, data->engwords[data->current_key + 1]);
     } else {
-        sprintf(data->result + strlen(data->result),
-                "%-20s\t",
+        sprintf(data->qString + strlen(data->qString),
+                "%s\n",
                 data->ruwords[data->current_key]);
-        sprintf(data->result + strlen(data->result),
-                "%-20s\t",
+        sprintf(data->aString + strlen(data->aString),
+                "%s\n",
                 data->engwords[data->current_key]);
         target = g_utf8_casefold(data->engwords[data->current_key], -1);
         gtk_label_set_text(
                 data->labelWord, data->ruwords[data->current_key + 1]);
     }
 
-    sprintf(data->result + strlen(data->result),
-            "%-20s\t",
-            gtk_entry_get_text(data->entry));
     temp = g_strcmp0(target, input);
 
     if (temp == 0) {
-        sprintf(data->result + strlen(data->result), "%s\n", "+");
+        sprintf(data->resultString + strlen(data->resultString), "\t%c\t", '+');
     } else {
-        sprintf(data->result + strlen(data->result), "%s\n", "-");
+        sprintf(data->resultString + strlen(data->resultString), "\t%c\t", '-');
     }
+    sprintf(data->resultString + strlen(data->resultString),
+            "%s\n",
+            gtk_entry_get_text(data->entry));
 
     gtk_entry_set_text(data->entry, "");
 
     data->current_key++;
     if (data->current_key >= data->count_words) {
-        gtk_label_set_text(data->labelResults, data->result);
+        gtk_label_set_text(data->labelResults, data->resultString);
+        gtk_label_set_text(data->labelQ, data->qString);
+        gtk_label_set_text(data->labelA, data->aString);
         testEnd(data);
     }
     return;
@@ -54,7 +56,8 @@ void compareFunc(GtkWidget* widget, gpointer user_data)
 void testStart(GtkWidget* widget, gpointer user_data)
 {
     struct compData* data = user_data;
-    set_compData(gtk_spin_button_get_value(data->counterSetter), data);
+    set_compData(
+            gtk_spin_button_get_value(data->counterSetter), data, "words.csv");
 
     if (data->mode == 'e') {
         gtk_label_set_text(data->labelWord, data->engwords[0]);
@@ -99,7 +102,7 @@ void activate(GtkApplication* app, gpointer user_data)
     GtkWidget *gridTest, *gridMenu, *gridEnd;
     GtkWidget *buttonNext, *buttonStart, *buttonQuit;
     GtkWidget *ruButton, *engButton;
-    GtkWidget *labelEnd, *labelStart;
+    GtkWidget *labelEnd, *labelStart, *labelEmpty;
     struct compData* data = malloc(sizeof(struct compData));
 
     window = gtk_application_window_new(app);
@@ -117,7 +120,7 @@ void activate(GtkApplication* app, gpointer user_data)
     gtk_stack_add_named(GTK_STACK(data->pages), gridEnd, "End");
 
     /* MAIN MENU */
-    labelStart = gtk_label_new("Сколько вопросов?\nС какого переводим?");
+    labelStart = gtk_label_new("Сколько вопросов?\nС какого переводим?\n");
     gtk_grid_attach(GTK_GRID(gridMenu), labelStart, 0, 0, 1, 1);
 
     data->counterSetter = gtk_spin_button_new_with_range(1, 10, 1);
@@ -155,8 +158,17 @@ void activate(GtkApplication* app, gpointer user_data)
     labelEnd = gtk_label_new("Результаты");
     gtk_grid_attach(GTK_GRID(gridEnd), labelEnd, 0, 0, 2, 1);
 
+    data->labelQ = gtk_label_new("placeholder");
+    gtk_grid_attach(GTK_GRID(gridEnd), data->labelQ, 0, 1, 1, 1);
+
+    labelEmpty = gtk_label_new("   ");
+    gtk_grid_attach(GTK_GRID(gridEnd), labelEmpty, 1, 1, 1, 1);
+
+    data->labelA = gtk_label_new("placeholder");
+    gtk_grid_attach(GTK_GRID(gridEnd), data->labelA, 2, 1, 1, 1);
+
     data->labelResults = gtk_label_new("placeholder");
-    gtk_grid_attach(GTK_GRID(gridEnd), data->labelResults, 0, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(gridEnd), data->labelResults, 3, 1, 1, 1);
 
     buttonQuit = gtk_button_new_with_label("Выход");
     g_signal_connect(buttonQuit, "clicked", G_CALLBACK(destroy), app);
