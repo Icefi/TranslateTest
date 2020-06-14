@@ -4,6 +4,7 @@
 # Установка библиотеки gtk
 Ubuntu: 
 1. apt-get install -qq libgtk-3-dev
+
 Windows:
 1. Установить msys2
 2. Скачать инструменты
