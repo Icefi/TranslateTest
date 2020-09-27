@@ -3,65 +3,61 @@
 
 #include "base.h"
 
-int rand_condition(int max_lines, int count_words, int i, int passed)
-{
-    if ((double)((count_words - i) / (double)(max_lines - passed))
-        >= ((double)rand() / (double)RAND_MAX)) {
-        return 1;
-    }
-    return 0;
+int randCondition(int maxLines, int countWords, int i, int passed) {
+  if ((double)((countWords - i) / (double)(maxLines - passed)) >=
+      ((double)rand() / (double)RAND_MAX)) {
+    return 1;
+  }
+  return 0;
 }
 
-int get_file_lines(char* name)
-{
-    int number_of_lines = 0;
-    int ch;
-    FILE* f = fopen(name, "r");
+int getFileLines(char *name) {
+  int numberLines = 0;
+  int ch;
+  FILE *f = fopen(name, "r");
 
-    while (EOF != (ch = getc(f)))
-        if ('\n' == ch) {
-            ++number_of_lines;
-        }
-    fclose(f);
-    return number_of_lines;
+  while (EOF != (ch = getc(f)))
+    if ('\n' == ch) {
+      ++numberLines;
+    }
+  fclose(f);
+  return numberLines;
 }
 
-void set_compData(int count_words, struct compData* new_base, char* name)
-{
-    new_base->count_words = count_words;
-    new_base->resultString
-            = (char*)malloc(count_words * MAX_WORD_SIZE * 8 + 50);
-    new_base->aString = (char*)malloc(count_words * MAX_WORD_SIZE * 4 + 50);
-    new_base->qString = (char*)malloc(count_words * MAX_WORD_SIZE * 4 + 50);
-    new_base->current_key = 0;
+void setCompData(int countWords, struct compData *newBase, char *name) {
+  newBase->countWords = countWords;
+  newBase->resultString = (char *)malloc(countWords * MAX_WORD_SIZE * 8 + 50);
+  newBase->aString = (char *)malloc(countWords * MAX_WORD_SIZE * 4 + 50);
+  newBase->qString = (char *)malloc(countWords * MAX_WORD_SIZE * 4 + 50);
+  newBase->currentKey = 0;
 
-    sprintf(new_base->aString, "Ответ\n");
-    sprintf(new_base->qString, "Вопрос\n");
-    sprintf(new_base->resultString, "Оценка\tВвод\n");
+  sprintf(newBase->aString, "Ответ\n");
+  sprintf(newBase->qString, "Вопрос\n");
+  sprintf(newBase->resultString, "Оценка\tВвод\n");
 
-    FILE* file = fopen(name, "r");
+  FILE *file = fopen(name, "r");
 
-    char string[2 * MAX_WORD_SIZE + 2] = {};
-    char* istr;
+  char string[2 * MAX_WORD_SIZE + 2] = {};
+  char *istr;
 
-    srand(time(NULL));
+  srand(time(NULL));
 
-    int i = 0;
-    int passed = 0;
-    int max_lines = get_file_lines(name);
-    while ((fgets(string, 2 * MAX_WORD_SIZE + 2, file) != NULL)
-           && (i < count_words)) {
-        passed++;
-        if (rand_condition(max_lines, count_words, i, passed)) {
-            istr = strtok(string, ",");
-            g_utf8_strncpy(new_base->ruwords[i], istr, MAX_WORD_SIZE);
+  int i = 0;
+  int passed = 0;
+  int maxLines = getFileLines(name);
+  while ((fgets(string, 2 * MAX_WORD_SIZE + 2, file) != NULL) &&
+         (i < countWords)) {
+    passed++;
+    if (randCondition(maxLines, countWords, i, passed)) {
+      istr = strtok(string, ",");
+      g_utf8_strncpy(newBase->ruwords[i], istr, MAX_WORD_SIZE);
 
-            istr = strtok(NULL, "\n");
-            g_utf8_strncpy(new_base->engwords[i], istr, MAX_WORD_SIZE);
+      istr = strtok(NULL, "\n");
+      g_utf8_strncpy(newBase->engwords[i], istr, MAX_WORD_SIZE);
 
-            i++;
-        }
+      i++;
     }
+  }
 }
 
 #endif

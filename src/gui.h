@@ -8,8 +8,8 @@
 #define MAX_WORD_SIZE 20
 
 typedef struct compData {
-    int count_words;
-    int current_key;
+    int countWords;
+    int currentKey;
     char engwords[10][4 * MAX_WORD_SIZE + 1];
     char ruwords[10][4 * MAX_WORD_SIZE + 1];
     GtkWidget* entry;
@@ -21,18 +21,20 @@ typedef struct compData {
     char mode;
 } compData;
 
-void testStart(GtkWidget* widget, gpointer user_data);
+void testStart(GtkWidget* widget, gpointer userData);
 
-void testEnd(gpointer user_data);
+void error(GtkWidget* app, char* errorText);
+
+void testEnd(gpointer userData);
 
 void destroy(GtkWidget* widget, gpointer data);
 
-void setEng(GtkWidget* widget, gpointer user_data);
+void setEng(GtkWidget* widget, gpointer userData);
 
-void setRu(GtkWidget* widget, gpointer user_data);
+void setRu(GtkWidget* widget, gpointer userData);
 
-void compareFunc(GtkWidget* widget, gpointer user_data);
+void compareFunc(GtkWidget* widget, gpointer userData);
 
-void activate(GtkApplication* app, gpointer user_data);
+void activate(GtkApplication* app, gpointer userData);
 
 #endif /*GUI_H*/
